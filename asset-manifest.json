@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/robocaller/static/css/main.a5cc2f27.css",
+    "main.js": "/robocaller/static/js/main.f98813e4.js",
+    "static/js/531.8460dff4.chunk.js": "/robocaller/static/js/531.8460dff4.chunk.js",
+    "static/js/586.0acfbed8.chunk.js": "/robocaller/static/js/586.0acfbed8.chunk.js",
+    "static/js/193.f66dfdd2.chunk.js": "/robocaller/static/js/193.f66dfdd2.chunk.js",
+    "static/js/213.f336479f.chunk.js": "/robocaller/static/js/213.f336479f.chunk.js",
+    "static/js/875.2b585ec9.chunk.js": "/robocaller/static/js/875.2b585ec9.chunk.js",
+    "static/js/787.b554b379.chunk.js": "/robocaller/static/js/787.b554b379.chunk.js",
+    "index.html": "/robocaller/index.html",
+    "main.a5cc2f27.css.map": "/robocaller/static/css/main.a5cc2f27.css.map",
+    "main.f98813e4.js.map": "/robocaller/static/js/main.f98813e4.js.map",
+    "531.8460dff4.chunk.js.map": "/robocaller/static/js/531.8460dff4.chunk.js.map",
+    "586.0acfbed8.chunk.js.map": "/robocaller/static/js/586.0acfbed8.chunk.js.map",
+    "193.f66dfdd2.chunk.js.map": "/robocaller/static/js/193.f66dfdd2.chunk.js.map",
+    "213.f336479f.chunk.js.map": "/robocaller/static/js/213.f336479f.chunk.js.map",
+    "875.2b585ec9.chunk.js.map": "/robocaller/static/js/875.2b585ec9.chunk.js.map",
+    "787.b554b379.chunk.js.map": "/robocaller/static/js/787.b554b379.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a5cc2f27.css",
+    "static/js/main.f98813e4.js"
+  ]
+}
