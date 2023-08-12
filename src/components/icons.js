@@ -6,8 +6,8 @@ export function IconSpeech_typing(props) {
     <svg
       viewBox="0 0 21 21"
       fill="currentColor"
-      height="1em"
-      width="1em"
+      height="2em"
+      width="2em"
       {...props}
     >
       <g fill="none" fillRule="evenodd">
@@ -31,8 +31,8 @@ export function IconRecordFill(props) {
     <svg
       fill="currentColor"
       viewBox="0 0 16 16"
-      height="1em"
-      width="1em"
+      height="2em"
+      width="2em"
       {...props}
     >
       <path fillRule="evenodd" d="M8 13A5 5 0 108 3a5 5 0 000 10z" />

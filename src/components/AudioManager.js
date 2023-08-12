@@ -47,22 +47,28 @@ export default function AudioManager({}) {
   useEffect(() => {
     if (canUserSpeak && !recording) {
       startRecording();
-
       setCanUserSpeak(false);
     }
   }, [canUserSpeak]);
 
   return (
     <div>
-      <div className="flex items-center">
-        {recording && <IconRecordFill />}
-        {speaking && <IconSpeech_typing />}
+      <div className="flex justify-center">
+        {
+          <IconRecordFill
+            className={`${recording ? "text-red-500" : "text-black/5"}`}
+          />
+        }
+        {
+          <IconSpeech_typing
+            className={`${speaking ? "text-sky-500" : "text-black/5"}`}
+          />
+        }
         {transcribing && " Transcribing "}
         {error && JSON.stringify(error)}
       </div>
-      <p>You said: {transcript.text}</p>
       <Button onClick={() => startRecording()}>Start</Button>
-      <Button onClick={() => pauseRecording()}>Pause</Button>
+      {/* <Button onClick={() => pauseRecording()}>Pause</Button> */}
       <Button onClick={() => stopRecording()}>Stop</Button>
     </div>
   );

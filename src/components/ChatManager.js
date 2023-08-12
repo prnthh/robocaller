@@ -6,11 +6,18 @@ const ChatManager = ({}) => {
 
   const [message, setMessage] = useState("");
   const [streamedResponse, setStreamedResponse] = useState("");
-  const [chatHistory, setChatHistory] = useState([]);
+  const [chatHistory, setChatHistory] = useState([
+    {
+      role: "system",
+      content:
+        "You are a telephone receptionist. Provide short and helpful answers as if you were speaking to a customer on the phone.",
+    },
+  ]);
   const controllerRef = useRef(null); // Store the AbortController instance
 
   useEffect(() => {
     if (voiceMessage) {
+      setMessage(voiceMessage);
       handleSubmit(voiceMessage);
     }
   }, [voiceMessage]);
@@ -82,31 +89,16 @@ const ChatManager = ({}) => {
         }
       }
 
-      //   const data = await response.json();
-
-      //   // Append the AI's response to the chat history
       setChatHistory((chatHistory) => [
         ...chatHistory,
         { role: "assistant", content: finalResponse },
       ]);
 
-      if ("speechSynthesis" in window) {
-        var msg = new SpeechSynthesisUtterance();
-        var voices = window.speechSynthesis.getVoices();
-        msg.voice = voices[0];
-        msg.rate = 1;
-        msg.pitch = 2;
-        msg.text = finalResponse;
-        msg.onend = function (e) {
-          console.log("Finished in " + e.elapsedTime + " seconds.");
-        };
-        speechSynthesis.cancel();
-        speechSynthesis.speak(msg);
-      }
-
-      // start listening for voice
-      setCanUserSpeak(true);
-      setStreamedResponse("");
+      // after text generation is done, allow the user to speak again
+      doSpeechSynthesis(finalResponse, () => {
+        setCanUserSpeak(true);
+        setStreamedResponse("");
+      });
     } catch (error) {
       console.error("Error calling GPT-3 API:", error);
     }
@@ -119,8 +111,9 @@ const ChatManager = ({}) => {
     <div>
       <div className="flex flex-col items-start">
         {chatHistory.map(({ role, content }, index) => (
-          <div key={index}>
-            <b>{role === "user" ? "User" : "AI"}:</b> {content}
+          <div key={index} className="flex">
+            <div className="w-32 font-bold capitalize">{role}:</div>
+            <div className="text-left">{content}</div>
           </div>
         ))}
       </div>
@@ -133,17 +126,37 @@ const ChatManager = ({}) => {
           e.preventDefault();
           handleSubmit(message);
         }}
+        className="flex justify-center items-center border-2 border-gray-300 rounded-md mx-4 my-4"
       >
-        <input
+        <textarea
           type="text"
           placeholder="Type a message..."
+          className={"h-18 flex-grow"}
           value={message}
           onChange={handleMessageChange}
         />
-        <button type="submit">Send</button>
+        <button className={"h-18"} type="submit">
+          Send
+        </button>
       </form>
     </div>
   );
 };
+
+export function doSpeechSynthesis(text, callback) {
+  if ("speechSynthesis" in window) {
+    var msg = new SpeechSynthesisUtterance();
+    var voices = window.speechSynthesis.getVoices();
+    msg.voice = voices[0];
+    msg.rate = 1;
+    msg.pitch = 2;
+    msg.text = text;
+    msg.onend = function (e) {
+      callback();
+    };
+    speechSynthesis.cancel();
+    speechSynthesis.speak(msg);
+  }
+}
 
 export default ChatManager;
