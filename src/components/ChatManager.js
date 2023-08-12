@@ -2,19 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAgent } from "../App";
 
 const ChatManager = ({}) => {
-  const { userMessage: voiceMessage, setCanUserSpeak, apiKey } = useAgent();
+  const {
+    userMessage: voiceMessage,
+    setCanUserSpeak,
+    agentProfile,
+    apiKey,
+  } = useAgent();
 
   const [message, setMessage] = useState("");
   const [streamedResponse, setStreamedResponse] = useState("");
-  const [chatHistory, setChatHistory] = useState([
-    {
-      role: "system",
-      content:
-        "You are a telephone receptionist. Provide short and helpful answers as if you were speaking to a customer on the phone.",
-    },
-  ]);
+  const [chatHistory, setChatHistory] = useState([]);
   const controllerRef = useRef(null); // Store the AbortController instance
 
+  useEffect(() => {
+    if (agentProfile) setChatHistory(agentProfile.prompt);
+  }, [agentProfile]);
   useEffect(() => {
     if (voiceMessage) {
       setMessage(voiceMessage);
@@ -89,16 +91,16 @@ const ChatManager = ({}) => {
         }
       }
 
+      setStreamedResponse("");
       setChatHistory((chatHistory) => [
         ...chatHistory,
         { role: "assistant", content: finalResponse },
       ]);
 
-      // after text generation is done, allow the user to speak again
       doSpeechSynthesis(finalResponse, () => {
         setCanUserSpeak(true);
-        setStreamedResponse("");
       });
+      // setCanUserSpeak(true);
     } catch (error) {
       console.error("Error calling GPT-3 API:", error);
     }
@@ -109,11 +111,13 @@ const ChatManager = ({}) => {
 
   return (
     <div>
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col">
         {chatHistory.map(({ role, content }, index) => (
-          <div key={index} className="flex">
-            <div className="w-32 font-bold capitalize">{role}:</div>
-            <div className="text-left">{content}</div>
+          <div key={index} className="flex w-full">
+            <div className="w-[90px] shrink-0 font-bold capitalize">
+              {role}:
+            </div>
+            <div className="flex text-left">{content}</div>
           </div>
         ))}
       </div>
@@ -121,7 +125,7 @@ const ChatManager = ({}) => {
       {/* streamed response */}
 
       <div>{streamedResponse}</div>
-      <form
+      {/* <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(message);
@@ -138,7 +142,7 @@ const ChatManager = ({}) => {
         <button className={"h-18"} type="submit">
           Send
         </button>
-      </form>
+      </form> */}
     </div>
   );
 };
@@ -148,11 +152,11 @@ export function doSpeechSynthesis(text, callback) {
     var msg = new SpeechSynthesisUtterance();
     var voices = window.speechSynthesis.getVoices();
     msg.voice = voices[0];
-    msg.rate = 1;
+    msg.rate = 0.8;
     msg.pitch = 2;
     msg.text = text;
     msg.onend = function (e) {
-      callback();
+      callback && callback();
     };
     speechSynthesis.cancel();
     speechSynthesis.speak(msg);

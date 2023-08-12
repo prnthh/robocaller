@@ -3,9 +3,16 @@ import { useEffect, useState } from "react";
 import { IconRecordFill, IconSpeech_typing } from "./icons";
 import { useAgent } from "../App";
 import { Button } from "./Helpers";
+import { doSpeechSynthesis } from "./ChatManager";
 
 export default function AudioManager({}) {
-  const { apiKey, setUserMessage, canUserSpeak, setCanUserSpeak } = useAgent();
+  const {
+    apiKey,
+    setUserMessage,
+    canUserSpeak,
+    setCanUserSpeak,
+    agentProfile,
+  } = useAgent();
 
   const {
     recording,
@@ -24,8 +31,11 @@ export default function AudioManager({}) {
     // timeSlice: 1_000, // 1 second
   });
 
-  const [error, setError] = useState(null);
-
+  useEffect(() => {
+    if (agentProfile) {
+      doSpeechSynthesis(agentProfile.prompt[1].content, () => startRecording());
+    }
+  }, [agentProfile]);
   useEffect(() => {
     if (transcript.text) setUserMessage(transcript.text);
   }, [transcript]);
@@ -41,6 +51,7 @@ export default function AudioManager({}) {
     if (!speaking && startedSpeaking) {
       setStartedSpeaking(false);
       stopRecording();
+      // pauseRecording();
     }
   }, [speaking]);
 
@@ -65,11 +76,10 @@ export default function AudioManager({}) {
           />
         }
         {transcribing && " Transcribing "}
-        {error && JSON.stringify(error)}
       </div>
-      <Button onClick={() => startRecording()}>Start</Button>
+      {/* <Button onClick={() => startRecording()}>Start</Button> */}
       {/* <Button onClick={() => pauseRecording()}>Pause</Button> */}
-      <Button onClick={() => stopRecording()}>Stop</Button>
+      {/* {<Button onClick={() => stopRecording()}>Stop</Button>} */}
     </div>
   );
 }

@@ -2,16 +2,33 @@ import { createContext, useContext, useEffect, useState } from "react";
 import "./App.css";
 import AudioManager from "./components/AudioManager";
 import ChatManager from "./components/ChatManager";
+import { Button } from "./components/Helpers";
 
 const AgentContext = createContext({});
 export const useAgent = () => useContext(AgentContext);
 
-const agentStates = ["idle", "listening", "thinking", "speaking"];
+const agentProfiles = [
+  {
+    name: "Goat",
+    prompt: [
+      {
+        role: "system",
+        content:
+          "You are a telephone receptionist. Provide short and helpful answers as if you were speaking to a customer on the phone.",
+      },
+      {
+        role: "assistant",
+        content: "Hello, I'm Goat from Foundation. How can I help you?",
+      },
+    ],
+  },
+];
 
 const AgentProvider = ({ children }) => {
-  const [agentState, setAgentState] = useState(agentStates[0]);
   const [userMessage, setUserMessage] = useState("");
   const [canUserSpeak, setCanUserSpeak] = useState(false);
+
+  const [agentProfile, setAgentProfile] = useState();
 
   const [apiKey, setApiKey] = useState();
 
@@ -28,28 +45,34 @@ const AgentProvider = ({ children }) => {
   }, []);
 
   const providerValues = {
-    agentState,
-    setAgentState,
     userMessage,
     setUserMessage,
     canUserSpeak,
     setCanUserSpeak,
+    agentProfile,
     apiKey,
   };
   return (
     <AgentContext.Provider value={providerValues}>
-      {apiKey && children}
       <input
         value={apiKey}
         onChange={(e) => setApiKey(e.target.value)}
         placeholder="OpenAI API Key"
       />
+      <div>
+        {agentProfiles.map((profile) => (
+          <Button onClick={() => setAgentProfile(profile)}>
+            Call {profile.name}
+          </Button>
+        ))}
+      </div>
+
+      {apiKey && agentProfile && children}
     </AgentContext.Provider>
   );
 };
 
 function App() {
-  const [userMessage, setUserMessage] = useState("");
   return (
     <div className="App">
       <AgentProvider>
